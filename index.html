@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Antic Didone", serif;
+            font-weight: 800;
+        }
+
+        section {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+
+            .background {
+                width: 100%;
+                height: 100%;
+
+                >h1 {
+                    width: 100%;
+                    height: 40px;
+                    position: relative;
+                    color: white;
+                    font-size: 60px;
+                    z-index: 99;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-shadow: 0px 0px 10px rgba(240, 232, 216, 0.735);
+                    margin-top: 60px;
+
+                }
+
+                >video {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+
+                }
+            }
+
+            .dialog {
+                width: 700px;
+                height: 400px;
+                margin: 100px auto;
+                border: 2px solid white;
+                box-shadow: 0px 0px 10px rgb(187, 177, 177);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                background-color: rgba(255, 255, 255, 0.537);
+                border-radius: 20px;
+                opacity: 1;
+                transition: opacity 1s ease-in-out;
+
+                >* {
+                    text-align: center;
+                    cursor: pointer;
+                    list-style-type: lower-greek;
+                    line-height: 40px;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+
+        <div class="background">
+            <h1>Welcome To The Cascade Hotel </h1>
+            <video loop muted autoplay src="img/seaside.mp4"></video>
+            <div class="dialog">
+                <h2></h2>
+                <ul></ul>
+            </div>
+        </div>
+    </section>
+    <audio autoplay loop src="audio/ocean-waves-250310.mp3"></audio>
+</body>
+<script>
+
+    let myTime = 10000
+    const h2 = document.querySelector('.dialog>h2')
+    const ul = document.querySelector('.dialog>ul')
+    let answerLi = []   ////this empty array returns nodelist
+
+    const data = [
+        ////creating first object
+
+        {
+            id: 1,
+            question: ' Which holiday activity would you prefer at our hotel?',
+            answers: [' Relaxing at the spa', ' A guided tour of the local area', ' A cooking class with our chef', 'A cocktail-making workshop'],
+
+        },
+
+
+        {
+            id: 2,
+            question: ' If you could choose a theme for tonight’s hotel dinner, what would it be?',
+
+            answers: [' Italian Feast', 'Barbecue Night', 'Seafood Extravaganza', 'Vegan Delights'],
+
+        },
+
+        {
+            id: 3,
+            question: 'What is your ideal room view during your stay?',
+
+            answers: [' Ocean view', 'Mountain view', 'Garden view', 'city skyline ',],
+
+
+        },
+
+        {
+            id: 4,
+            question: 'How do you usually like to start your holiday mornings?',
+
+            answers: ['Breakfast in bed', 'Morning swim in the pool', ' Hike or walk around the area', ' Yoga or meditation class'],
+
+
+
+        },
+
+        {
+            id: 5,
+            question: 'What type of entertainment would you enjoy most during your stay?',
+
+            answers: [' Live music at the hotel bar', ' Movie night under the stars', 'Game night with other guests', ' A local cultural performance'],
+
+        }
+    ]
+
+    //// i here is the index of array of objects above, its counts of questions
+    let turn = 0;
+    createQ()
+
+    ///when a func is called back in a methode there is no need for ()
+    let myClear = setInterval(createQ, myTime);
+    function createQ() {
+        if (turn < data.length) {
+            h2.innerHTML = data[turn].id + " : " + data[turn].question
+            ////empty ul so it bring new sets of answers instead of adding answers
+            ul.innerHTML = ''
+
+            //creating li:
+            data[turn].answers.map((val) => {
+                let li = document.createElement('li')
+                li.innerHTML = val
+                ul.appendChild(li)
+            })
+            ///end of li creation
+
+            answerLi = document.querySelectorAll('ul>li')
+            console.log(answerLi);
+
+
+            ////i++ should be at the end bc 
+            ///if it was at first it would declined q1 and called q2
+            turn++
+        } else {
+            ////how to stop the autoincriment of questions///
+            clearInterval(myClear)
+
+        }
+        answerLi.forEach((val, i) => {
+            val.addEventListener('click', (e) => {
+                //// i here is the i being clicked
+                //// so if i = right option status 
+
+                // alert('true')
+                val.style.boxShadow = '2px 2px 25px white';
+                val.style.borderRadius = '20px';
+                val.style.background = 'rgba(255, 255, 255, 0.595)'
+                val.style.transition = 'all .7s ease';
+
+
+                /////cuts the time shorter to the next question 
+                setTimeout(() => {
+                    clearInterval(myClear)
+                    createQ()
+                }, 1000); //////  1s shows the result
+                setTimeout(() => {
+                    myClear = setInterval(createQ, 10000)
+                }, 1000) //////in 1s goes to next question
+
+
+            })
+        })
+
+    }
+
+    setInterval(calcTime, 1000)
+
+    function calcTime() {
+        /////call myTime every 1 second, goes from 10000 t0 0 and goes back in aloop 10000-0
+        if (myTime != 0) {
+            // myTime = myTime - 1000 shorthand:
+            myTime -= 1000
+        } else {
+            myTime = 10000
+        }
+        console.log(myTime);
+
+    }
+</script>
+
+</html>
